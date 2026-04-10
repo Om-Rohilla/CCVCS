@@ -1,4 +1,4 @@
-import { Course, CourseFile, FileVersion } from "@/lib/types";
+import { CompareResult, Course, CourseFile, FileVersion } from "@/lib/types";
 
 type ApiError = {
   message: string;
@@ -58,5 +58,23 @@ export const apiClient = {
     const response = await fetch(`/api/files/${fileId}/versions`, { cache: "no-store" });
     if (!response.ok) throw await toError(response);
     return (await response.json()) as { versions: FileVersion[] };
+  },
+
+  compareVersions: async (fileId: string, v1: number, v2: number) => {
+    const response = await fetch(`/api/files/${fileId}/compare?v1=${v1}&v2=${v2}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) throw await toError(response);
+    return (await response.json()) as CompareResult & { truncated?: boolean };
+  },
+
+  rollbackVersion: async (fileId: string, payload: { targetVersion: number; reason?: string }) => {
+    const response = await fetch(`/api/files/${fileId}/rollback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw await toError(response);
+    return (await response.json()) as { newVersionAfterRollback: number };
   },
 };

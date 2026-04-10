@@ -93,3 +93,22 @@ create policy "teacher admin can insert versions"
 -- Storage setup:
 -- 1) Create bucket: course-files (private)
 -- 2) Add storage policies for authenticated read and teacher/admin write.
+
+insert into storage.buckets (id, name, public)
+values ('course-files', 'course-files', false)
+on conflict (id) do nothing;
+
+drop policy if exists "authenticated read course files" on storage.objects;
+create policy "authenticated read course files"
+  on storage.objects for select
+  to authenticated
+  using (bucket_id = 'course-files');
+
+drop policy if exists "teacher admin write course files" on storage.objects;
+create policy "teacher admin write course files"
+  on storage.objects for insert
+  to authenticated
+  with check (
+    bucket_id = 'course-files'
+    and (auth.jwt() -> 'app_metadata' ->> 'role') in ('teacher', 'admin')
+  );

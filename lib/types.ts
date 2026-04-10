@@ -38,3 +38,22 @@ export type FileVersion = {
   uploadedAt?: string;
   checksum?: string;
 };
+
+export type DiffLine = {
+  lineNumber: number;
+  type: "added" | "removed" | "changed" | "unchanged";
+  before: string;
+  after: string;
+};
+
+export type CompareResult = {
+  v1: number;
+  v2: number;
+  summary: {
+    added: number;
+    removed: number;
+    changed: number;
+    unchanged: number;
+  };
+  lines: DiffLine[];
+};

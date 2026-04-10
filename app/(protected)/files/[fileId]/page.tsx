@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { NewVersionForm } from "@/components/files/NewVersionForm";
+import { RollbackForm } from "@/components/files/RollbackForm";
 import { VersionTimeline } from "@/components/files/VersionTimeline";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -37,6 +38,7 @@ const FilePage = async ({ params }: FilePageProps) => {
       uploadedBy: version.uploaded_by,
       uploadedAt: version.uploaded_at,
     })) ?? [];
+  const availableVersions = mappedVersions.map((version) => version.versionNumber);
 
   return (
     <AppShell title="File Details">
@@ -62,6 +64,14 @@ const FilePage = async ({ params }: FilePageProps) => {
           <Link className="mt-4 inline-block" href={`/files/${fileId}/compare`}>
             <Button variant="secondary">Open compare view</Button>
           </Link>
+
+          <div className="mt-6 border-t border-slate-700/60 pt-4">
+            <h4 className="text-base font-semibold text-brand-white">Rollback</h4>
+            <p className="mb-3 mt-1 text-sm text-brand-light">
+              Restore any older version as a new latest version.
+            </p>
+            <RollbackForm fileId={fileId} availableVersions={availableVersions} />
+          </div>
         </Card>
       </section>
     </AppShell>
