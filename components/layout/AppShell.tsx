@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { PropsWithChildren } from "react";
 
+import { LogoutButton } from "@/components/auth/LogoutButton";
+
 type AppShellProps = PropsWithChildren<{
   title: string;
 }>;
@@ -17,6 +19,7 @@ export const AppShell = ({ title, children }: AppShellProps) => (
           <Link href="/profile" className="hover:text-brand-gold">
             Profile
           </Link>
+          <LogoutButton />
         </nav>
       </div>
     </header>
